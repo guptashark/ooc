@@ -13,6 +13,16 @@
  *
  * which gives full access to internals. 
  * (ie, client code can modify internals). 
+ *
+ * Pros: 
+ * 	* Easier for client to understand 
+ * 	  what is going on behind the scenes, 
+ * 	* Faster for C, no pointer chasing in fn's, 
+ * 	assuming that the struct is small. 
+ * Cons: 
+ * 	* Client has access to internals. 
+ * 	* changing the struct may break their code. 
+ * 
  * -----------------------------------------
  *  B) Declare a pointer to a struct. 
  *
@@ -23,6 +33,15 @@
  *  know internals, and don't know variables. 
  *  But, they know it's some struct. Which means
  *  that they know an implementation detail. 
+ *
+ *  Pros: 
+ *  	* Client can't reasonably modify internals.
+ *  Cons: 
+ *  	* Pointer chasing. 
+ *  	* not flexible, if representation changes
+ *  	from a struct to an enum, etc. then 
+ *  	the lib is in trouble since apps already
+ *  	assume that it's a struct. 
  *  -----------------------------------------
  *
  *  extern const void * set;
@@ -36,6 +55,15 @@
  *
  *  void pointer is not an implementation detail
  *  since it is so generic. 
+ *
+ *  Pros: 
+ *  	* Super easy to upgrade, since void * 
+ *  	ensures client's code can't break if 
+ *  	internals are changed (within spec)
+ *  	* hides everything from client. 
+ *  Cons: 
+ *  	* lose type safety. 
+ *  	* pointer chasing. 
  */
 extern const void * set;
 
