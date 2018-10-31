@@ -13,6 +13,7 @@
  * a null ptr). 
  */
 
+
 /* Funnily enough, we don't really need 
  * the set and object type descriptors, 
  * since the internal representation 
@@ -36,6 +37,11 @@ int main(void) {
 		puts("contains?");
 	}
 
+	if(differ(a, add(s, a))) {
+		puts("differ?");
+	}
+
+	
 	if(contains(s, drop(s, a))) {
 		puts("drop?");
 	}

@@ -7,6 +7,9 @@ LD = ld
 LDFLAGS_1 = -dynamic-linker /lib/ld-linux-x86-64.so.2 /usr/lib/crt1.o /usr/lib/crti.o 
 LDFLAGS_2 = --library=c /usr/lib/crtn.o
 
+section8: main.o section_8/set.o
+	gcc main.o section_8/set.o 
+
 all: main.o set.o
 	$(LD) $(LDFLAGS_1) main.o set.o $(LDFLAGS_2)
 
@@ -22,6 +25,9 @@ new.o: new.c
 
 set.o: set.c
 	$(CC) $(CFLAGS) -c set.c
+
+section_8/set.o: section_8/set.c
+	$(CC) $(CFLAGS) -c section_8/set.c -o section_8/set.o
 
 clean:
 	rm -f *.o
