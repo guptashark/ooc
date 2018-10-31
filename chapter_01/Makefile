@@ -1,3 +1,7 @@
+# Note: The rules need to be strealined and pattern matched. 
+# The LD needs to be fixed if ld is going to be explicityly called
+# For building directories like obj, do we do just obj, or obj/ ? 
+# Questions questions questions. 
 CC = gcc
 CFLAGS = -ansi -Wall -Wextra -Werror -pedantic
 
@@ -7,28 +11,36 @@ LD = ld
 LDFLAGS_1 = -dynamic-linker /lib/ld-linux-x86-64.so.2 /usr/lib/crt1.o /usr/lib/crti.o 
 LDFLAGS_2 = --library=c /usr/lib/crtn.o
 
-section8: main.o section_8/set.o
-	gcc main.o section_8/set.o 
+all: dirs section8 simple
 
-all: main.o set.o
-	$(LD) $(LDFLAGS_1) main.o set.o $(LDFLAGS_2)
+dirs:
+	mkdir -p obj bin
 
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c
+section8: obj/main.o obj/set_v2.o
+	gcc obj/main.o obj/set_v2.o -o bin/section8
 
+simple: obj/main.o obj/set.o
+	$(LD) $(LDFLAGS_1) obj/main.o obj/set.o $(LDFLAGS_2) -o bin/simple
 
-object.o: object.c
-	$(CC) $(CFLAGS) -c object.c
+obj/main.o: main.c
+	$(CC) $(CFLAGS) -c main.c -o obj/main.o
 
-new.o: new.c
-	$(CC) $(CFLAGS) -c new.c
+obj/object.o: object.c
+	$(CC) $(CFLAGS) -c object.c -o obj/object.o
 
-set.o: set.c
-	$(CC) $(CFLAGS) -c set.c
+obj/new.o: new.c
+	$(CC) $(CFLAGS) -c new.c -o obj/new.o
 
-section_8/set.o: section_8/set.c
-	$(CC) $(CFLAGS) -c section_8/set.c -o section_8/set.o
+obj/set.o: set.c
+	$(CC) $(CFLAGS) -c set.c -o obj/set.o
+
+obj/set_v2.o: section_8/set.c
+	$(CC) $(CFLAGS) -c section_8/set.c -o obj/set_v2.o
 
 clean:
-	rm -f *.o
-	rm -f a.out
+	rm obj/*.o
+	rm bin/* 
+
+deep_clean: 
+	rm -rf obj
+	rm -rf bin
