@@ -12,6 +12,16 @@
  * an element that isn't in a set returns
  * a null ptr). 
  */
+
+/* Funnily enough, we don't really need 
+ * the set and object type descriptors, 
+ * since the internal representation 
+ * handles them as the same, differentiating
+ * only by wether a ptr is used as a set or 
+ * obj. But it makes things more easy 
+ * to visualize here in terms of what is 
+ * happening, so we use the descriptors. 
+ */ 
 int main(void) {
 	void * s = new(set);
 	void * a = add(s, new(object));
