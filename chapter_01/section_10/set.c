@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -133,6 +134,7 @@ void * find(const void * set_arg, const void * element_arg) {
 	const struct object *element = element_arg;
 	unsigned i;
 	bool exists = false;
+
 	for(i = 0; i < s->count; i++) {
 		if(s->members[i] == element) {
 			exists = true;
@@ -161,14 +163,7 @@ void * drop(void * set_arg, const void * element_arg) {
 	if(element == NULL) {
 		return NULL;
 	}
-/*	
-	for(i = 0; i < s->count && !found; i++) {
-		if(s->members[i] == element) {
-			found = true;
-			j = i;
-		}
-	}
-*/
+
 	while(i < s->count && !found) {
 		if(s->members[i] == element) {
 			found = true;
@@ -207,6 +202,15 @@ int store(const void * object_arg, FILE *fp) {
 	return fprintf(fp, "%p\n", (void *)o);
 }
 
+int storev(void * object_arg, va_list ap) {
+	struct object *o = object_arg;
+	FILE *fp;
+	printf("storev called\n");
+       	fp = va_arg(ap, FILE *);
+	return fprintf(fp, "%p storev\n", (void *)o);
+	
+}
+
 int apply_store(const void * set_arg, FILE *fp) {
 	const struct set * s = set_arg;
 	unsigned i = 0;
@@ -221,5 +225,44 @@ int apply_store(const void * set_arg, FILE *fp) {
 	return 0;
 }	
 
+/* Main idea/motivation for this fn: 
+ * We want the user to be able to effectively 
+ * call a fn on every obj in the list. 
+ *
+ * This fn needs parameters other than the obj. 
+ * The only way to do this is pass them in through 
+ * the map fn. The action fn will know how to work 
+ * with the parameters it gets. It just needs apply 
+ * to pass the params to it. 
+ *
+ * This is why storev is useful - because if in its 
+ * type signature it required a file pointer, then 
+ * apply would have to recognize that the fn 
+ * needs a file pointer and pass it. But, apply 
+ * is generic. This lets it do more than just storev. 
+ * It could even do something like 'add3' that adds
+ * 3 to each elemtn in the set. We do lose type safety, 
+ * but it's up to the client to pass the right params
+ * to apply that will be auto passed to their action fn.
+ */
 
+int apply
+(const void * set_arg, 
+ int (*action)(void *object, va_list ap),
+ ...) {
+	const struct set * s = set_arg;
+	unsigned int i = 0;
+
+	va_list args;
+	va_start(args, action);
+
+	while(i < s->count) {
+
+		action(s->members[i], args);
+		i++;
+	}
+
+	va_end(args);
+	return 0;
+}
 

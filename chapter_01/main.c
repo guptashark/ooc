@@ -33,6 +33,10 @@ int main(void) {
 		puts("ok");
 	} 
 
+#if V3
+	apply(s, storev, stdout);
+#endif
+
 	if(contains(s, c)) {
 		puts("contains?");
 	}

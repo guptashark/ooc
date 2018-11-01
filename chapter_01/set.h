@@ -78,6 +78,13 @@ int contains(const void * set, const void * element);
 
 #if V3
 int apply_store(const void * set_arg, FILE *fp);
+
+int apply
+(const void * set_arg,
+ int (*action)(void *object, va_list ap),
+ ...);
+
+
 #endif
 
 #endif
