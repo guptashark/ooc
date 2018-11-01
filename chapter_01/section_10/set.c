@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 /* We are now extending this to allow
@@ -96,8 +98,10 @@ void delete(void * item) {
 void *add(void * set_arg, const void *element_arg) {
 	struct set * s = set_arg;
 	const struct object * element = element_arg;
-	int i;
+	unsigned i;
 	bool exists = false;
+
+	puts("calling v3 add");
 
 	for(i = 0; i < s->count && !exists; i++) {
 		if(s->members[i] == element) {
@@ -108,7 +112,7 @@ void *add(void * set_arg, const void *element_arg) {
 	if(!exists) {
 		/* There is space, we can add it. */
 		if(s->count < 16) {
-			s->members[count] = element;
+			s->members[s->count] = (void *)element;
 			s->count++;
 		/* Can't add, return null to signify */
 		} else {
@@ -121,17 +125,17 @@ void *add(void * set_arg, const void *element_arg) {
 	 * has been "added" to the set, there was no 
 	 * semantic change. 
 	 */
-	return element;
+	return (void *)element;
 }
 
 /* Probably should use this fn in the add fn... */
 void * find(const void * set_arg, const void * element_arg) {
 	const struct set * s = set_arg;
 	const struct object *element = element_arg;
-	int i;
+	unsigned i;
 	bool exists = false;
 	for(i = 0; i < s->count; i++) {
-		if(s->memebers[i] == element) {
+		if(s->members[i] == element) {
 			exists = true;
 		}
 	}
@@ -146,7 +150,7 @@ void * find(const void * set_arg, const void * element_arg) {
 void * drop(void * set_arg, const void * element_arg) {
 	struct set * s = set_arg;
 	struct object * element = find(s, element_arg);
-	int i;
+	unsigned i;
 	bool found = false;
 	/* if element is NULL, then we can't drop it, 
 	 * it's not in the set. return NULL since 
@@ -158,7 +162,7 @@ void * drop(void * set_arg, const void * element_arg) {
 	}
 	
 	for(i = 0; i < s->count && !found; i++) {
-		if(s->memebers[i] == element) {
+		if(s->members[i] == element) {
 			found = true;
 		}
 	}
@@ -169,4 +173,18 @@ void * drop(void * set_arg, const void * element_arg) {
 	return element;
 }
 
+/* copied from set_v2 (in section_8
+ */
+unsigned count(const void * set_arg) {
+	const struct set * s = set_arg;
+	return s->count;
+}
+
+int differ(const void * a, const void *b) {
+	return a != b;
+}
+
+int contains(const void * set_arg, const void *element_arg) {
+	return find(set_arg, element_arg) != NULL;
+}
 

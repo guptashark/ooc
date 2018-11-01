@@ -11,10 +11,13 @@ LD = ld
 LDFLAGS_1 = -dynamic-linker /lib/ld-linux-x86-64.so.2 /usr/lib/crt1.o /usr/lib/crti.o 
 LDFLAGS_2 = --library=c /usr/lib/crtn.o
 
-all: dirs section8 simple
+all: dirs section10 section8 simple
 
 dirs:
 	mkdir -p obj bin
+
+section10: obj/main.o obj/set_v3.o
+	gcc obj/main.o obj/set_v3.o -o bin/section10
 
 section8: obj/main.o obj/set_v2.o
 	gcc obj/main.o obj/set_v2.o -o bin/section8
@@ -37,6 +40,8 @@ obj/set.o: set.c
 obj/set_v2.o: section_8/set.c
 	$(CC) $(CFLAGS) -c section_8/set.c -o obj/set_v2.o
 
+obj/set_v3.o: section_10/set.c
+	$(CC) $(CFLAGS) -c section_10/set.c -o obj/set_v3.o
 clean:
 	rm obj/*.o
 	rm bin/* 
