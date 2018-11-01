@@ -22,7 +22,7 @@
  * This is because delete doesn't yet know
  * how much memory was allocated for the set
  * if the set is built dynamically. So, we
- * build it statically. Lets say, max is 32. 
+ * build it statically. Lets say, max is 16. 
  *
  * This still allows us to do the exercise, 
  * which is to implement the following fns: 
@@ -52,5 +52,76 @@
  * 	This is why storev is useful - it can find
  * 	the file ptr arg in its vararg list. 
  */
+
+/* For this set, no duplicates. Ie, adding to the 
+ * set when it already has the element has no 
+ * effect
+ */
+struct set {
+	void * members[16];
+	unsigned int count;
+};
+
+struct object {
+	int data;
+};
+
+static const size_t set_size = sizeof(struct set);
+static const size_t object_size = sizeof(struct object);
+
+const void * set = &set_size;
+const void * object = &object_size;
+
+
+/* Copy over the new and delete fn's from 
+ * set.c in section_8
+ */
+void * new (const void * type, ...) {
+	const size_t size = *(const size_t *)type;
+	void * p = calloc(1, size);
+
+	assert(p);
+	return p;
+}
+
+void delete(void * item) {
+	free(item);
+}
+
+
+/* Since calloc initializes memory to zero, we're 
+ * safe, in that a set starts off as empty with count
+ * == zero
+ */
+void *add(void * set_arg, const void *element_arg) {
+	struct set * s = set_arg;
+	const struct object * element = element_arg;
+	int i;
+	bool exists = false;
+
+	for(i = 0; i < s->count && !exists; i++) {
+		if(s->members[i] == element) {
+			exists = true;
+		}
+	}
+
+	if(!exists) {
+		/* There is space, we can add it. */
+		if(s->count < 16) {
+			s->members[count] = element;
+			s->count++;
+		/* Can't add, return null to signify */
+		} else {
+			return NULL;
+		}
+	} 
+
+	/* if it does exist in the set, then silently
+	 * return the element, since technically it 
+	 * has been "added" to the set, there was no 
+	 * semantic change. 
+	 */
+	return element;
+}
 
 
