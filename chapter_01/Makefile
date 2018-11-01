@@ -28,8 +28,8 @@ simple: obj/main.o obj/set.o
 obj/main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o obj/main.o
 
-obj/main_v3.o: section_10/main.c
-	$(CC) $(CFLAGS) -c section_10/main.c -o obj/main_v3.o
+obj/main_v3.o: main.c
+	$(CC) $(CFLAGS) -D V3 -c main.c -o obj/main_v3.o
 
 obj/object.o: object.c
 	$(CC) $(CFLAGS) -c object.c -o obj/object.o
