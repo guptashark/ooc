@@ -101,7 +101,6 @@ void *add(void * set_arg, const void *element_arg) {
 	unsigned i;
 	bool exists = false;
 
-	puts("calling v3 add");
 
 	for(i = 0; i < s->count && !exists; i++) {
 		if(s->members[i] == element) {
@@ -150,8 +149,10 @@ void * find(const void * set_arg, const void * element_arg) {
 void * drop(void * set_arg, const void * element_arg) {
 	struct set * s = set_arg;
 	struct object * element = find(s, element_arg);
-	unsigned i;
+	unsigned i = 0;
+	/* unsigned j; */
 	bool found = false;
+
 	/* if element is NULL, then we can't drop it, 
 	 * it's not in the set. return NULL since 
 	 * we couldn't drop it
@@ -160,10 +161,19 @@ void * drop(void * set_arg, const void * element_arg) {
 	if(element == NULL) {
 		return NULL;
 	}
-	
+/*	
 	for(i = 0; i < s->count && !found; i++) {
 		if(s->members[i] == element) {
 			found = true;
+			j = i;
+		}
+	}
+*/
+	while(i < s->count && !found) {
+		if(s->members[i] == element) {
+			found = true;
+		} else {
+			i++;
 		}
 	}
 
@@ -192,12 +202,24 @@ int contains(const void * set_arg, const void *element_arg) {
 /* The actual assignment part - this will help us debug
  * the current buggy code, assuming this works./
  */
-
-
 int store(const void * object_arg, FILE *fp) {
 	const struct object *o = object_arg;
 	return fprintf(fp, "%p\n", (void *)o);
 }
+
+int apply_store(const void * set_arg, FILE *fp) {
+	const struct set * s = set_arg;
+	unsigned i = 0;
+	printf("%u\n", s->count);
+
+
+	while(i < s->count) {
+		store(s->members[i], fp);
+		i++;
+	}
+	
+	return 0;
+}	
 
 
 

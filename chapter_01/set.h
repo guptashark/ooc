@@ -1,6 +1,7 @@
 #ifndef SET_H
 #define SET_H
 
+#include <stdio.h>
 /* Several ways to provide a set data type to 
  * A) a client. Provide the whole struct: 
  *
@@ -72,5 +73,11 @@ void * add(void * set, const void * element);
 void * find(const void * set, const void * element);
 void * drop(void * set, const void * element);
 int contains(const void * set, const void * element);
+
+
+
+#if V3
+int apply_store(const void * set_arg, FILE *fp);
+#endif
 
 #endif

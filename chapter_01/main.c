@@ -33,11 +33,6 @@ int main(void) {
 		puts("ok");
 	} 
 
-#if V3
-	store(a, stdout);
-	store(b, stdout);
-#endif
-
 	if(contains(s, c)) {
 		puts("contains?");
 	}
@@ -46,7 +41,6 @@ int main(void) {
 		puts("differ?");
 	}
 
-	
 	if(contains(s, drop(s, a))) {
 		puts("drop?");
 	}
