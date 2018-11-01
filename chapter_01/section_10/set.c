@@ -205,25 +205,10 @@ int store(const void * object_arg, FILE *fp) {
 int storev(void * object_arg, va_list ap) {
 	struct object *o = object_arg;
 	FILE *fp;
-	printf("storev called\n");
        	fp = va_arg(ap, FILE *);
-	return fprintf(fp, "%p storev\n", (void *)o);
+	return fprintf(fp, "%p\n", (void *)o);
 	
 }
-
-int apply_store(const void * set_arg, FILE *fp) {
-	const struct set * s = set_arg;
-	unsigned i = 0;
-	printf("%u\n", s->count);
-
-
-	while(i < s->count) {
-		store(s->members[i], fp);
-		i++;
-	}
-	
-	return 0;
-}	
 
 /* Main idea/motivation for this fn: 
  * We want the user to be able to effectively 
@@ -257,12 +242,13 @@ int apply
 	va_start(args, action);
 
 	while(i < s->count) {
+		va_start(args, action);
 
 		action(s->members[i], args);
+		va_end(args);
 		i++;
 	}
 
-	va_end(args);
 	return 0;
 }
 
