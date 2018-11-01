@@ -188,3 +188,16 @@ int contains(const void * set_arg, const void *element_arg) {
 	return find(set_arg, element_arg) != NULL;
 }
 
+
+/* The actual assignment part - this will help us debug
+ * the current buggy code, assuming this works./
+ */
+
+
+int store(const void * object_arg, FILE *fp) {
+	const struct object *o = object_arg;
+	return fprintf(fp, "%p\n", (void *)o);
+}
+
+
+

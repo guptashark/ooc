@@ -16,8 +16,8 @@ all: dirs section10 section8 simple
 dirs:
 	mkdir -p obj bin
 
-section10: obj/main.o obj/set_v3.o
-	gcc obj/main.o obj/set_v3.o -o bin/section10
+section10: obj/main_v3.o obj/set_v3.o
+	gcc obj/main_v3.o obj/set_v3.o -o bin/section10
 
 section8: obj/main.o obj/set_v2.o
 	gcc obj/main.o obj/set_v2.o -o bin/section8
@@ -27,6 +27,9 @@ simple: obj/main.o obj/set.o
 
 obj/main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o obj/main.o
+
+obj/main_v3.o: section_10/main.c
+	$(CC) $(CFLAGS) -c section_10/main.c -o obj/main_v3.o
 
 obj/object.o: object.c
 	$(CC) $(CFLAGS) -c object.c -o obj/object.o
