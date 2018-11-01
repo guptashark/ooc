@@ -124,4 +124,49 @@ void *add(void * set_arg, const void *element_arg) {
 	return element;
 }
 
+/* Probably should use this fn in the add fn... */
+void * find(const void * set_arg, const void * element_arg) {
+	const struct set * s = set_arg;
+	const struct object *element = element_arg;
+	int i;
+	bool exists = false;
+	for(i = 0; i < s->count; i++) {
+		if(s->memebers[i] == element) {
+			exists = true;
+		}
+	}
+
+	if(exists) {
+		return (void *)element;
+	} else {
+		return NULL;
+	}
+}
+
+void * drop(void * set_arg, const void * element_arg) {
+	struct set * s = set_arg;
+	struct object * element = find(s, element_arg);
+	int i;
+	bool found = false;
+	/* if element is NULL, then we can't drop it, 
+	 * it's not in the set. return NULL since 
+	 * we couldn't drop it
+	 */
+
+	if(element == NULL) {
+		return NULL;
+	}
+	
+	for(i = 0; i < s->count && !found; i++) {
+		if(s->memebers[i] == element) {
+			found = true;
+		}
+	}
+
+	s->count--;
+	s->members[i] = s->members[s->count];
+	s->members[s->count] = NULL;
+	return element;
+}
+
 
