@@ -36,7 +36,11 @@ void * new (const void * class_arg, ... ) {
 	 * that you can get the first element 
 	 * of a struct by dereferencing a ptr 
 	 * to it. (ie, a struct never has 
-	 * padding before first field
+	 * padding before first field.
+	 *
+	 * (p is a ptr to an obj. An obj's 
+	 * first field must be a ptr to its
+	 * class.)
 	 */
 	*(const struct class **)p = c;
 
@@ -70,3 +74,25 @@ void * new (const void * class_arg, ... ) {
 }
 
 
+
+void delete(void * self) {
+	const struct class * c;
+	assert(self);
+
+	c = *(const struct class **)self;
+	if(c && c->dtor) {
+		self = c->dtor(self);
+	}
+
+	/* This counts on the dtor returning 
+	 * the pointer it was fed. Unsure why 
+	 * we have it assign to itself, why 
+	 * not simply delete self without 
+	 * reassining it? dtor could cheat
+	 * and return a null pointer, ensuring
+	 * the object isn't deleted. 
+	 *
+	 *TODO Why is this the way it is? 
+	 */ 
+	free(self);
+}
