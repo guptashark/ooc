@@ -130,3 +130,29 @@ int differ(const void * self, const void * b) {
 	assert(c && c->differ);
 	return c->differ(self, b);
 }
+
+
+/* An example of a polymorphic function that 
+ * doesn't use dynamic linkage. No other fn is 
+ * called, or linked in at execution time. 
+ * The fn is still polymorphic because it can 
+ * operate on a variety of objects. 
+ *
+ * For instance, the "+" fn is polymorphic in 
+ * C becuase it can work on both ints and float. 
+ *
+ * We implement our own size_of because C's sizeof 
+ * only works at compile time. If it we were to 
+ * apply it to any of our objects, we would only 
+ * ever get the size of a void *. We have to write
+ * our own to get the size that was allocated to it
+ * by new.
+ */
+size_t size_of(const void * self) {
+	assert(self);
+	const struct class * c;
+	c = *(const struct class **)self;
+
+	assert(c);
+	return c->size;
+}
