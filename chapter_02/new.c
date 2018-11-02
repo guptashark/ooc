@@ -96,3 +96,37 @@ void delete(void * self) {
 	 */ 
 	free(self);
 }
+
+
+int differ(const void * self, const void * b) {
+	/* What is this type decl... jesus */
+	/* const struct class * const * cp = self */
+	/* A pointer to a constant pointer to a 
+	 * const struct. Seems unnecessary. 
+	 */
+
+	/* For now, operate under the assumption 
+	 * that if self is a valid ptr (passes assert)
+	 * then it points to a valid type, and is safe to 
+	 * dereference. 
+	 *
+	 * book addresses this problem by saying there
+	 * are several solutions to ensure self is 
+	 * a valid obj ptr: 
+	 * 	- compre *self to address range of valid 
+	 * 	types
+	 * 	- put a magic number at the beginning 
+	 * 	of each type description. 
+	 * 	- wait until chapter 8. 
+	 */
+
+	/* Instead of using the double ptr, 
+	 * we'll use the single. 
+	 */
+	const struct class * c;
+	assert(self);	
+	c = *(const struct class **)self;
+
+	assert(c && c->differ);
+	return c->differ(self, b);
+}
