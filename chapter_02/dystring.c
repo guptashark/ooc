@@ -3,6 +3,10 @@
 #include <assert.h>
 #include <string.h>
 
+#include "new.h"
+#include "new.r"
+#include "dystring.h"
+
 struct string {
 	const void * class;
 	char * text;
@@ -41,3 +45,31 @@ static void * string_dtor(void * self_arg) {
 	return s;
 }
 
+static void * string_clone(const void * self_arg) {
+	const struct string * s = self_arg;
+	return new(string, s->text);
+}
+
+static int string_differ
+(const void * self_arg, const void * b_arg) {
+	const struct string * s = self_arg;
+	const struct string * b = b_arg;
+
+	/* Same exact string, because same object */
+	if(s == b) return 0;
+
+	/* Don't really need to check if b 
+	 * is a real string, I mean, come on */
+
+	return strcmp(s->text, b->text);
+}
+
+static const struct class string_type = {
+	sizeof(struct string),
+	string_ctor, 
+	string_dtor,
+	string_clone,
+	string_differ
+};
+
+const void * string = &string_type;
