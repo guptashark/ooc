@@ -2,27 +2,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+#include "new.r"
 #include "new.h"
-
-struct class {
-	/* new needs to know how much mem to allocate */
-	size_t size;
-
-	/* new calls this to initialize obj
-	 * (may install dynamic mem for itself) */
-	void * (* ctor) (void * self, va_list *app);
-	/* delete calls this to properly destroy 
-	 * the obj, with dynamically allocated mem */
-	void * (* dtor) (void * self);
-	void * (* clone) (const void * self);
-	/* Not a simple case of pointer difference 
-	 * anymore. objects could be math style
-	 * matrices and have same numbers, but are 
-	 * different objects (copies). Like 
-	 * python deepcopy, I think */
-	int (* differ)(const void * self, const void * b);
-};
-
 void * new (const void * class_arg, ... ) {
 	const struct class * c = class_arg;
 	void * p = calloc(1, c-> size);
@@ -131,6 +112,14 @@ int differ(const void * self, const void * b) {
 	return c->differ(self, b);
 }
 
+void * clone(const void * item) {
+	const struct class * c;
+	assert(item);
+	c = *(const struct class **)item;
+
+	assert(c && c->clone);
+	return c->clone(item);
+}
 
 /* An example of a polymorphic function that 
  * doesn't use dynamic linkage. No other fn is 
