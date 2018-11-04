@@ -87,6 +87,7 @@ static void * atom_ctor(void * self_arg, va_list *app) {
 	if(ret == 0) {
 		ring = self;
 		ring->next = self;
+		self->count = 1;
 	} else if(ret == 1) {
 		p->count++;
 		free(self);
