@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -98,6 +100,43 @@ static void * atom_ctor(void * self_arg, va_list *app) {
 	return self;
 }
 
+
+
+/* check to see if the text is the only copy left. 
+ * if so, then we delete it from the ring. Otherwise, 
+ * we don't delete anything, instead decrementing 
+ * the count by 1. return a null since we don't 
+ * want to be deletig anything. 
+ */
+static void * atom_dtor(void * self_arg) {
+	struct atom * p = self_arg;
+
+	/* it's not possible for this atom 
+	 * to not be in the ring. Get the count. 
+	 */
+
+	if (p->count > 1) {
+		p->count--;
+		printf("%u copies left.\n", p->count);
+		return NULL;
+	} else {
+		printf("deleting last copy (unimplemented)\n");
+		/* need to delete this item 
+		 * from the ring since it's the 
+		 * last of its kind
+		 */
+
+		/* free(p->text); */
+
+		/* how do we get the atom that 
+		 * points to this one? 
+		 */
+		return NULL;
+	}
+}
+		
+		
+const void * atom;
 
 
 
