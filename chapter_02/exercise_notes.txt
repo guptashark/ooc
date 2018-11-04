@@ -1,0 +1,69 @@
+Instead of implementing the exercise suggestions, 
+I'll discuss implementation strategy here. 
+
+Implementation of set and object: 
+Given that we only have several functions that 
+are polymorphic: ctor, dtor, clone, differ, and
+size_of, we're limited in how we can even 
+interact with a set. There are no functions to 
+add objects to a set. We can create a set and
+then add objects to it by passing the object
+owner to the object itself. This requires us
+to keep a list of allocated objects. Then, 
+to implement differ, we'd have to iterate 
+through the set to see if they have the 
+same objects. This gets difficult since an 
+object can have the same contents as another
+allocated object (cloneing). The same problem
+exists for set cloning. there seems to be 
+no way other than to iterate through a list
+to determine what the elements of the list are. 
+Alternatively, feed the set all of the ptrs
+to all its objects and make it immutable. 
+This solves all the problems. Likely involves
+dynamic allocation of memory in a set to 
+contain an array or list of ptrs to its 
+members. 
+
+There should be more methods for strings: 
+The issue is that if there are more 
+methods for strings, and we want to make
+them all polymorphic, then sets have the 
+same type descriptor in a sense - and need
+to fill out NULL for all the string fn's. 
+Ie, if we decided to add substring to 
+the type_descriptor for strings, then 
+sets need to put in a NULL for the field
+in its own type descriptor. This is 
+unweildy in the long run. We can't have
+a massive type descriptor that has every 
+possible function for every type. 
+Instead, there need to be different forms
+of the type descriptor struct, that all
+somehow work together. 
+
+Can the value of an atom be changed? 
+No. If there are copies of the atom, 
+then each of them now points to a new
+string, which may have unexpected 
+results. It should be immutable. 
+Another issue is that if we do change
+the contents, then we'd need to determine
+if the new string already exists. if it 
+does, then we'd have to delete the atom
+and return copies of the other node. 
+This all sounds possible, so long as 
+the user knows what they are doing... 
+but it seems unnecesary. Why not 
+just create a new string instead 
+of modifying an atom when it can 
+have all this going on in the background? 
+So, yes, it's technically possible, but 
+a bad idea. Changing one copy changes 
+all of them. Alternatively, you could 
+say that it's a hard no, since the 
+user wants to modify just one copy, 
+but then since the pointers are 
+equal, it would modify all copies, 
+and we'd have to make more copies. 
+Not great. 
