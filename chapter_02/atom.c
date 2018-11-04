@@ -55,13 +55,11 @@ ring_check(const char *text, struct atom ** ap) {
 	struct atom *p;
 
 	if(ring == NULL) {
-		printf("ring is null.\n");
 		return 0;
 	}
 
 	p = ring;
 	do {
-		printf("%s, %s\n", p->text, text);
 		if(strcmp(p->text, text) == 0) {
 			*ap = p;
 			return 1;
@@ -114,6 +112,7 @@ static void * atom_ctor(void * self_arg, va_list *app) {
  */
 static void * atom_dtor(void * self_arg) {
 	struct atom * p = self_arg;
+	struct atom * a;
 
 	/* it's not possible for this atom 
 	 * to not be in the ring. Get the count. 
@@ -121,21 +120,23 @@ static void * atom_dtor(void * self_arg) {
 
 	if (p->count > 1) {
 		p->count--;
-		printf("%u copies left.\n", p->count);
 		return NULL;
 	} else {
-		printf("deleting last copy (unimplemented)\n");
-		/* need to delete this item 
-		 * from the ring since it's the 
-		 * last of its kind
-		 */
+		if(p->next == p) {
+			ring = NULL;
+			free(p->text);
+			return p;
+		}
 
-		/* free(p->text); */
+		a = p->next;
+		while(a->next != p) {
+			a = a->next;
+		}
 
-		/* how do we get the atom that 
-		 * points to this one? 
-		 */
-		return NULL;
+		a->next = p->next;
+		free(p->text);
+		return p;
+
 	}
 }
 
