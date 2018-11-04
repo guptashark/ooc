@@ -55,11 +55,13 @@ ring_check(const char *text, struct atom ** ap) {
 	struct atom *p;
 
 	if(ring == NULL) {
+		printf("ring is null.\n");
 		return 0;
 	}
 
 	p = ring;
 	do {
+		printf("%s, %s\n", p->text, text);
 		if(strcmp(p->text, text) == 0) {
 			*ap = p;
 			return 1;
@@ -84,6 +86,7 @@ static void * atom_ctor(void * self_arg, va_list *app) {
 
 	if(ret == 0) {
 		ring = self;
+		ring->next = self;
 	} else if(ret == 1) {
 		p->count++;
 		free(self);
@@ -134,9 +137,29 @@ static void * atom_dtor(void * self_arg) {
 		return NULL;
 	}
 }
-		
-		
-const void * atom;
+
+/* No string comparison needed - 
+ * must effectively be the same ptr
+ * if they are holding the same string. 
+ */
+static int atom_differ
+(const void *a_arg, const void * b_arg) {
+	if(a_arg == b_arg) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
 
 
+static const struct class atom_type = {
+	sizeof(struct atom),
+	atom_ctor, 
+	atom_dtor,
+	atom_clone,
+	atom_differ
+};
+
+
+const void * atom = &atom_type;
 
