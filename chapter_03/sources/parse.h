@@ -5,8 +5,8 @@
  *	symbols
  */
 
-enum tokens {				/* must not clash with operators */
-	NUMBER = 'n'			/* literal constant */
+enum tokens {		/* must not clash with operators */
+	NUMBER = 'n'	/* literal constant */
 };
 
 /*

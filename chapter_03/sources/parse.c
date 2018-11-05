@@ -6,30 +6,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "parse.h"			/* defines NUMBER */
+#include "parse.h"	/* defines NUMBER */
 #include "value.h"
 
 /*
  *	scanner
  */
 
-static enum tokens token;	/* current input symbol */
-static double number;		/* if NUMBER: numerical value */
+/* current input symbol */
+static enum tokens token;
+
+/* if NUMBER: numerical value */
+static double number;		
 
 static enum tokens scan (const char * buf)
-					/* return token = next input symbol */
+	/* return token = next input symbol */
 {	static const char * bp;
 
-	if (buf)
-		bp = buf;			/* new input line */
+	/* new input line */
 
+	if (buf)
+		bp = buf;			
 	while (isspace(* bp & 0xff))
 		++ bp;
 	if (isdigit(* bp & 0xff) || * bp == '.')
 	{	errno = 0;
-		token = NUMBER, number = strtod(bp, (char **) & bp);
+		token = NUMBER;
+	       	number = strtod(bp, (char **) & bp);
 		if (errno == ERANGE)
-			error("bad value: %s", strerror(errno));
+			error("bad val: %s", strerror(errno));
 	}
 	else
 		token = * bp ? * bp ++ : 0;
@@ -55,6 +60,17 @@ static void * factor (void)
 	case '-':
 		scan(0);
 		return new(Minus, factor());
+	/* Isn't this bad? If the token is 
+	 * neither + or -, then it'll default, 
+	 * when it actually could be a NUMBER
+	 * or a left paren?? 
+	 * figure this out:
+	 *
+	 * Answer: 
+	 * The program steps through and doesn't 
+	 * care where default is - it is only ever
+	 * called once all cases are exhausted. 
+	 */
 	default:
 		error("bad factor: '%c' 0x%x", token, token);
 	case NUMBER:
