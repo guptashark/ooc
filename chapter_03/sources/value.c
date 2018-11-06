@@ -214,6 +214,7 @@ static void * mkBin (va_list ap)
 }
 
 
+
 static double doAdd (const void * tree)
 {
 	/* The following is somewhat hard to 

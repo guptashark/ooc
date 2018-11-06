@@ -1,0 +1,53 @@
+
+With dynamic linking under our belt, we've 
+tackled an interesting object oriented programming
+principle. Hiding information is useful, and our 
+dynamic linking both hides the representation 
+of an object while providing a safeish way of 
+interacting with it. As long as the object 
+contains a type pointer that outlines all of the 
+function calls that can be made. 
+
+There is a lot to be desired. Objects should 
+be able to inherit from each other. Classes
+often support class variables that change for
+all objects. There are private and public 
+methods for objects. Syntax wise, the object
+is the namespace under which the function 
+lives. Ie, rather than doing: fn(a). we have
+a.fn(), with self being implicitly copied as
+the first argument to the fn. 
+
+TODO: One of the ways to scope functions, 
+constants, etc. is to create structs. 
+
+ie, if I wrote a class for vectors, 
+I can create: 
+
+struct {
+	print(...);
+	multiply(...);
+	...
+} Vector;
+
+and place this struct in the vector.h
+file. Then, when I call Vector.print(v), 
+I'll be calling the scoped function. 
+Unfortunately, this seems no better than 
+scoping using underscores: 
+vector_print(v); lol. 
+//////////////////////////////////////////
+
+In this module, we explore a different 
+concept than the one above. Objects can 
+inherit from each other, in OOP. For 
+instance, if we have a parent class as
+Animal, and then a child class as Cat, 
+then we should be able to inherit all
+the member variables and functions from 
+Animal - which we can by having the 
+animal struct be the first element of 
+the Cat struct. Since the beginning of
+the animal struct has a type pointer, 
+the cat struct is guaranteed to have 
+this as well. 
