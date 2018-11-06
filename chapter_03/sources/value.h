@@ -6,6 +6,7 @@
  */
 
 const void * Minus;
+const void * Inverse;
 const void * Value;
 const void * Mult;
 const void * Div;

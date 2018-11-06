@@ -77,8 +77,8 @@ exec (const void * tree)
 	 * the valid types that Type can 
 	 * be. 
 	 */
-	assert(tree)
-	assert(* (struct Type **) tree)
+	assert(tree);
+	assert(* (struct Type **) tree);
 	assert((* (struct Type **) tree) -> exec);
 
 	/* The dynamic function call. The type 
@@ -166,6 +166,13 @@ static double doMinus (const void * tree)
 	return - exec(((struct Un *) tree) -> arg);
 }
 
+static double doInverse (const void * tree) {
+	struct Un *t = (struct Un *)tree;
+	/* Assume that the exec isn't 0. 
+	 */
+	return 1.0 / exec(t->arg);
+}
+
 static void freeUn (void * tree)
 {
 	/* We have to cast tree to a 
@@ -200,6 +207,7 @@ static void * mkBin (va_list ap)
 	node -> right = va_arg(ap, void *);
 	return node;
 }
+
 
 static double doAdd (const void * tree)
 {
@@ -294,7 +302,7 @@ static struct Type _Div = { mkBin, doDiv, freeBin };
  * the binary operators)
  */
 static struct Type _Minus = { mkUn, doMinus, freeUn };
-
+static struct Type _Inverse = {mkUn, doInverse, freeUn };
 /* the type that is the leaf of the parse tree - 
  * the values themselves. 
  */
@@ -308,4 +316,5 @@ const void * Sub = & _Sub;
 const void * Mult = & _Mult;
 const void * Div = & _Div;
 const void * Minus = & _Minus;
+const void * Inverse = &_Inverse;
 const void * Value = & _Value;

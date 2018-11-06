@@ -19,7 +19,8 @@ static enum tokens token;
 /* if NUMBER: numerical value */
 static double number;		
 
-static enum tokens scan (const char * buf)
+static enum tokens 
+scan (const char * buf)
 	/* return token = next input symbol */
 {	static const char * bp;
 
@@ -32,6 +33,17 @@ static enum tokens scan (const char * buf)
 	if (isdigit(* bp & 0xff) || * bp == '.')
 	{	errno = 0;
 		token = NUMBER;
+		/* strtod takes in as many chars 
+		 * as it can to suitably convert
+		 * the string of digits into a 
+		 * floating point number. It stops
+		 * at the first non digit char, 
+		 * and then sets bp as a ptr to 
+		 * that char. if the numebr is
+		 * too big or too small, it 
+		 * returns ERANGE. 
+		 *
+		 */
 	       	number = strtod(bp, (char **) & bp);
 		if (errno == ERANGE)
 			error("bad val: %s", strerror(errno));
@@ -59,7 +71,15 @@ static void * factor (void)
 		return factor();
 	case '-':
 		scan(0);
+		/* Note here that we're 
+		 * returning Minus, not 
+		 * Sub. Minus is a unary
+		 * op. 
+		 */
 		return new(Minus, factor());
+	case 'i':
+		scan(0);
+		return new(Inverse, factor());
 	/* Isn't this bad? If the token is 
 	 * neither + or -, then it'll default, 
 	 * when it actually could be a NUMBER
