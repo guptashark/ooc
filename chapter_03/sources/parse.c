@@ -125,6 +125,9 @@ static void * product (void)
 		case '/':
 			type = Div;
 			break;
+		case '%':
+			type = Remainder;
+			break;
 		default:
 			return result;
 		}

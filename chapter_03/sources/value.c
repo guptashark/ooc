@@ -246,6 +246,15 @@ static double doAdd (const void * tree)
 	return l_val + r_val;
 }
 
+static double doRemainder(const void *tree) {
+
+	struct Bin *t = (struct Bin *)tree;
+	double l_val = exec(t -> left);
+	double r_val = exec(t -> right);
+
+	return fmod(l_val, r_val);
+}
+
 static double doSub (const void * tree)
 {
 	return exec(((struct Bin *) tree) -> left) -
@@ -301,6 +310,7 @@ static struct Type _Add = { mkBin, doAdd, freeBin };
 static struct Type _Sub = { mkBin, doSub, freeBin };
 static struct Type _Mult = { mkBin, doMult, freeBin };
 static struct Type _Div = { mkBin, doDiv, freeBin };
+static struct Type _Remainder = {mkBin, doRemainder, freeBin};
 
 /* This is a unary operator, negation. 
  * (might be confusing compared to _Sub from 
@@ -321,6 +331,7 @@ const void * Add = & _Add;
 const void * Sub = & _Sub;
 const void * Mult = & _Mult;
 const void * Div = & _Div;
+const void * Remainder = & _Remainder;
 const void * Minus = & _Minus;
 const void * Sine = & _Sine;
 const void * Inverse = &_Inverse;
