@@ -80,6 +80,9 @@ static void * factor (void)
 	case 'i':
 		scan(0);
 		return new(Inverse, factor());
+	case 's':
+		scan(0);
+		return new(Sine, factor());
 	/* Isn't this bad? If the token is 
 	 * neither + or -, then it'll default, 
 	 * when it actually could be a NUMBER

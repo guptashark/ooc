@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -172,6 +173,10 @@ static double doInverse (const void * tree) {
 	 */
 	return 1.0 / exec(t->arg);
 }
+static double doSine(const void * tree) {
+	struct Un *t = (struct Un *)tree;
+	return sin(exec(t->arg));
+}
 
 static void freeUn (void * tree)
 {
@@ -303,6 +308,7 @@ static struct Type _Div = { mkBin, doDiv, freeBin };
  */
 static struct Type _Minus = { mkUn, doMinus, freeUn };
 static struct Type _Inverse = {mkUn, doInverse, freeUn };
+static struct Type _Sine = {mkUn, doSine, freeUn };
 /* the type that is the leaf of the parse tree - 
  * the values themselves. 
  */
@@ -316,5 +322,6 @@ const void * Sub = & _Sub;
 const void * Mult = & _Mult;
 const void * Div = & _Div;
 const void * Minus = & _Minus;
+const void * Sine = & _Sine;
 const void * Inverse = &_Inverse;
 const void * Value = & _Value;
